@@ -1,6 +1,11 @@
+import 'dart:io';
+import 'dart:convert';
 import 'package:mongo_dart/mongo_dart.dart';
 
 void main(List<String> arguments) async {
+  int port = 8086;
+  var server = await HttpServer.bind('localhost', port);
+
   Db db = Db('mongodb://localhost:27017/testing');
 
   await db.open(); //If you open the database make sure you close.
@@ -9,39 +14,45 @@ void main(List<String> arguments) async {
 
   DbCollection coll = db.collection('people');
 
-  //TODO: Read people
-  //Full list of data
-  var people = await coll.find().toList();
-  //Using find Where.eq (match check if the field contain set of character lik A)
-  //var people = await coll.find(where.eq('first_name', 'Erwin')).toList();
-  //Using Limit
-  //var people = await coll.find(where.limit(5)).toList();
-  print(people);
+  server.listen((HttpRequest request) async {
+    switch (request.uri.path) {
+      case '/':
+        request.response.write('Hello World!');
+        await request.response.close();
+        break;
+      case '/people':
 
-  //TODO: Create person
-  await coll.insertAll([
-    {
-      "id": 3023,
-      "first_name": "Erwin",
-      "last_name": "Agpasa",
-      "email": "istran.net@gmail.com",
-      "gender": "Male",
-      "ip_address": "63.90.69.20"
+        //TODO: handle GET request
+        if (request.method == 'GET') {
+          request.response.write(await coll.find().toList());
+        }
+        //TODO: handle POST request
+        else if (request.method == 'POST') {
+          var content =
+              await request.cast<List<int>>().transform(Utf8Decoder()).join();
+          print(content);
+          //You can also decode
+          var data = json.decode(content);
+          print(data['name']);
+        }
+        //TODO: handle PUT request
+        else if (request.method == 'PUT') {
+        }
+        //TODO: handle DELETE request
+        else if (request.method == 'DELETE') {
+        }
+        //TODO: handle PATCH request
+        else if (request.method == 'PATCH') {}
+        await request.response.close();
+        break;
+      default:
+        request.response
+          ..statusCode = HttpStatus.notFound
+          ..write('Not Found')
+          ..close();
     }
-  ]);
-  print('Data inserted');
-
-  //TODO: Update person
-  await coll.update(await coll.findOne(where.eq('id', 3023)), {
-    r'$set': {'gender': 'Female'}
   });
-  print('updated');
-  print(await coll.findOne(where.eq('id', 3023)));
-
-  //TODO: Delete person
-  await coll.remove(await coll.findOne(where.eq('id', 3023)));
-  print(await coll.findOne(where.eq('id', 3023))); //retun null
-
+  print('Server listening to localhost:$port');
   //Close db connection
-  await db.close();
+  //await db.close();
 }
