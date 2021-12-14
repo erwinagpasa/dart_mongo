@@ -13,12 +13,23 @@ void main(List<String> arguments) async {
   //Full list of data
   //var people = await coll.find().toList();
   //Using find Where.eq (match check if the field contain set of character lik A)
-  var people = await coll.find(where.eq('first_name', 'Arleen')).toList();
+  var people = await coll.find(where.eq('first_name', 'Erwin')).toList();
   //Using Limit
   //var people = await coll.find(where.limit(5)).toList();
   print(people);
 
   //TODO: Create person
+  await coll.insertAll([
+    {
+      "id": 3023,
+      "first_name": "Erwin",
+      "last_name": "Agpasa",
+      "email": "istran.net@gmail.com",
+      "gender": "Male",
+      "ip_address": "63.90.69.20"
+    }
+  ]);
+  print('Data inserted');
 
   //TODO: Update person
 
