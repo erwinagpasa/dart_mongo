@@ -5,7 +5,7 @@ import 'package:mongo_dart/mongo_dart.dart';
 void main(List<String> arguments) async {
   int port = 8086;
   var server = await HttpServer.bind('localhost', port);
-
+  //Connecting to mongo database
   Db db = Db('mongodb://localhost:27017/testing');
 
   await db.open(); //If you open the database make sure you close.
@@ -14,8 +14,6 @@ void main(List<String> arguments) async {
 
   DbCollection coll = db.collection('people');
 
-  //Run in terminal => curl http://localhost:8086
-
   server.listen((HttpRequest request) async {
     switch (request.uri.path) {
       case '/':
@@ -23,8 +21,9 @@ void main(List<String> arguments) async {
         await request.response.close();
         break;
       case '/people':
-
         //TODO: handle GET request
+        //Run in terminal => curl http://localhost:8086/people
+        //This will display all the data
         if (request.method == 'GET') {
           request.response.write(await coll.find().toList());
         }
