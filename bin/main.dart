@@ -14,6 +14,8 @@ void main(List<String> arguments) async {
 
   DbCollection coll = db.collection('people');
 
+  //Run in terminal => curl http://localhost:8086
+
   server.listen((HttpRequest request) async {
     switch (request.uri.path) {
       case '/':
