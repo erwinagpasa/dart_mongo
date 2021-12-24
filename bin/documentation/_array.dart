@@ -6,9 +6,12 @@ void main() {
   List<int> favnums = [4, 8, 15, 16, 23, 42];
   //reassign a value
   favnums[3] = 17;
-
   print(favnums[3]);
   //Get length property
-  int countLenght = favnums.length;
-  print('Lenght is $countLenght');
+  //string interpolation
+  print('Lenght is ${favnums.length}');
+
+  //If the expression is a single identifier (variable),
+  //the brackets ({}) can be omitted.
+  print('Single identifier (variable) $favnums');
 }
